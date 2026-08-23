@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<style>
+ :root{
+ --paper:#E9EBEE;
+ --ink:#0F1317;
+ --muted:#6E7681;
+ --line:#C6CBD1;
+ --accent:#2B2FE8;
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{
+ background:var(--paper);
+ color:var(--ink);
+ font-family:"Noto Sans CJK TC","Noto Sans",sans-serif;
+ font-size:15px;
+ line-height:1.65;
+ -webkit-font-smoothing:antialiased;
+ }
+ .sheet{width:1180px;padding:56px 60px 64px;}
+ .mono{font-family:"DejaVu Sans Mono","Courier New",monospace;}
+
+ .eyebrow{
+ font-family:"DejaVu Sans Mono",monospace;
+ font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+ color:var(--accent);display:flex;align-items:center;gap:12px;
+ }
+ .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+ h1{font-size:40px;line-height:1.2;letter-spacing:-.02em;font-weight:700;margin:14px 0 8px;}
+ h2{font-size:27px;line-height:1.25;letter-spacing:-.01em;font-weight:700;margin:16px 0 6px;}
+ .lede{color:var(--muted);font-size:15px;max-width:760px;}
+
+ /* ---------- 1. TOKEN ---------- */
+ .tokgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px;}
+ .tokcard{background:#fff;border:1px solid var(--line);padding:22px 22px 24px;}
+ .tokcard h3{font-size:17px;font-weight:700;margin-bottom:2px;}
+ .tokcard .subj{font-size:12.5px;color:var(--muted);margin-bottom:16px;}
+ .row{border-top:1px solid #E6E8EB;padding-top:11px;margin-top:11px;}
+ .row:first-of-type{border-top:none;margin-top:0;padding-top:0;}
+ .k{font-family:"DejaVu Sans Mono",monospace;font-size:10px;letter-spacing:.16em;
+ text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+ .swatches{display:flex;gap:0;}
+ .sw{flex:1;height:38px;position:relative;}
+ .sw span{position:absolute;bottom:-16px;left:0;font-family:"DejaVu Sans Mono",monospace;
+ font-size:8.5px;color:var(--muted);}
+ .swrow{margin-bottom:20px;}
+ .v{font-size:13.5px;line-height:1.5;}
+ .v em{font-style:normal;color:var(--muted);}
+ .sig{background:#F2F3F5;border-left:2px solid var(--accent);padding:9px 12px;font-size:13px;}
+
+ /* ---------- 2. MOCKUPS ---------- */
+ .mocks{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px;}
+ .frame{border:1px solid var(--line);background:#fff;overflow:hidden;}
+ .bar{height:26px;background:#DFE2E6;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;padding:0 10px;gap:5px;}
+ .dot{width:7px;height:7px;border-radius:50%;background:#B6BCC4;}
+ .cap{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5;}
+ .cap b{color:var(--ink);font-weight:700;}
+
+ /* mock A — 感測監控台 */
+ .mA{background:#12161B;color:#E7ECF2;padding:20px 18px 22px;height:298px;position:relative;}
+ .mA .tag{font-family:"DejaVu Sans Mono",monospace;font-size:9px;letter-spacing:.2em;color:#F2A93B;}
+ .mA .big{font-family:"DejaVu Sans Mono",monospace;font-size:46px;line-height:1;
+ font-weight:700;margin:14px 0 2px;letter-spacing:-.03em;}
+ .mA .unit{font-size:11px;color:#7C8794;}
+ .mA .ruler{display:flex;margin:22px 0 6px;align-items:flex-end;height:34px;gap:3px;}
+ .mA .ruler i{flex:1;background:#2A323C;}
+ .mA .ruler i.on{background:#F2A93B;}
+ .mA .ticks{display:flex;justify-content:space-between;font-family:"DejaVu Sans Mono",monospace;
+ font-size:8px;color:#5B6572;border-top:1px solid #2A323C;padding-top:5px;}
+ .mA table{width:100%;border-collapse:collapse;margin-top:18px;
+ font-family:"DejaVu Sans Mono",monospace;font-size:10px;}
+ .mA td{padding:5px 0;border-bottom:1px solid #1E242B;color:#96A1AE;}
+ .mA td:last-child{text-align:right;color:#E7ECF2;}
+
+ /* mock B — 手作陶器 */
+ .mB{background:#DDE2DA;color:#22301F;padding:22px 20px;height:298px;position:relative;}
+ .mB .num{position:absolute;right:16px;top:22px;writing-mode:vertical-rl;
+ font-family:"DejaVu Sans Mono",monospace;font-size:10px;letter-spacing:.3em;color:#7E8C79;}
+ .mB h4{font-family:"Noto Serif CJK TC",serif;font-weight:400;font-size:27px;
+ line-height:1.32;letter-spacing:.02em;margin-bottom:10px;max-width:195px;}
+ .mB .rule{height:1px;background:#A9B5A4;margin:13px 0;}
+ .mB p{font-size:12px;line-height:1.9;color:#4A5847;max-width:210px;}
+ .mB .price{font-family:"Noto Serif CJK TC",serif;font-size:20px;margin-top:16px;}
+ .mB .btn{display:inline-block;margin-top:11px;border:1px solid #22301F;padding:7px 18px;
+ font-size:11.5px;letter-spacing:.1em;}
+
+ /* mock C — 夜間單車 */
+ .mC{background:#1B0F3B;color:#F4F0FF;padding:20px 18px;height:298px;position:relative;overflow:hidden;}
+ .mC .glow{position:absolute;width:230px;height:230px;border-radius:50%;right:-90px;top:-70px;
+ background:radial-gradient(circle,rgba(255,61,127,.55),rgba(27,15,59,0) 68%);}
+ .mC .kick{font-family:"DejaVu Sans Mono",monospace;font-size:9px;letter-spacing:.24em;color:#33E1FF;
+ position:relative;}
+ .mC h4{font-size:29px;line-height:1.22;font-weight:700;letter-spacing:-.01em;
+ margin:12px 0 10px;position:relative;}
+ .mC h4 u{text-decoration:none;color:#FF3D7F;}
+ .mC .wave{display:flex;align-items:flex-end;gap:2px;height:52px;margin:20px 0 14px;position:relative;}
+ .mC .wave i{flex:1;background:linear-gradient(180deg,#33E1FF,#7B4DFF);border-radius:1px;}
+ .mC .meta{display:flex;gap:18px;font-family:"DejaVu Sans Mono",monospace;font-size:9.5px;
+ color:#A99BD6;position:relative;}
+ .mC .pill{position:relative;display:inline-block;margin-top:18px;background:#FF3D7F;color:#1B0F3B;
+ font-weight:700;font-size:12px;padding:9px 20px;border-radius:999px;}
+
+ /* ---------- 3. AVOID ---------- */
+ .avoid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px;}
+ .av{border:1px solid var(--line);height:150px;padding:18px;display:flex;
+ flex-direction:column;justify-content:center;}
+ .av1{background:#F4F1EA;}
+ .av1 .t{font-family:"Noto Serif CJK TC",serif;font-size:25px;color:#1A1814;line-height:1.25;}
+ .av1 .b{display:inline-block;background:#D97757;color:#fff;font-size:10px;padding:6px 14px;
+ border-radius:4px;margin-top:14px;width:max-content;}
+ .av2{background:#0A0A0A;}
+ .av2 .t{font-size:25px;color:#fff;font-weight:700;line-height:1.25;}
+ .av2 .t u{text-decoration:none;color:#B6FF3C;}
+ .av2 .b{font-family:"DejaVu Sans Mono",monospace;font-size:9px;color:#B6FF3C;
+ letter-spacing:.2em;margin-top:12px;}
+ .av3{background:#fff;padding:0;}
+ .av3 .hd{border-bottom:1px solid #111;padding:8px 14px;font-family:"Noto Serif CJK TC",serif;
+ font-size:15px;letter-spacing:.05em;}
+ .av3 .cols{display:grid;grid-template-columns:1fr 1fr 1fr;height:104px;}
+ .av3 .c{border-right:1px solid #D6D6D6;padding:10px 12px;font-size:9px;color:#555;line-height:1.7;}
+ .av3 .c:last-child{border-right:none;}
+ .av3 .c b{display:block;font-family:"DejaVu Sans Mono",monospace;font-size:8px;
+ letter-spacing:.16em;color:#111;margin-bottom:5px;}
+ .why{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;}
+ .why b{color:#C0392B;font-weight:700;}
+
+ /* ---------- 4. COPY ---------- */
+ .copy{margin-top:30px;border:1px solid var(--line);background:#fff;}
+ .copy div{display:grid;grid-template-columns:120px 1fr 1fr;border-top:1px solid #E6E8EB;}
+ .copy div:first-child{border-top:none;background:#F2F3F5;}
+ .copy div > *{padding:12px 18px;font-size:13px;}
+ .copy .h{font-family:"DejaVu Sans Mono",monospace;font-size:10px;letter-spacing:.16em;
+ text-transform:uppercase;color:var(--muted);}
+ .copy .lab{font-size:12px;color:var(--muted);border-right:1px solid #E6E8EB;}
+ .copy .bad{color:#9AA1A9;text-decoration:line-through;border-right:1px solid #E6E8EB;}
+ .copy .good{font-weight:700;}
+ .foot{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
+ font-family:"DejaVu Sans Mono",monospace;font-size:10px;letter-spacing:.14em;
+ color:var(--muted);display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+
+<!-- ============ SHEET 1 ============ -->
+<div class="sheet" id="s1">
+ <div class="eyebrow">Sheet 01 — Design Token System</div>
+ <h1>動手寫 code 前，先交出這四行</h1>
+ <p class="lede">Agent 最常見的失敗不是寫不出畫面，而是跳過決策直接進入實作。要求它先產出一組 token，再依照 token 寫 code — 每個顏色與字級都必須能回推到這張卡。下面三組是同一份規格套在三種題目上的樣子。</p>
+
+ <div class="tokgrid">
+ <div class="tokcard">
+ <h3>Signal</h3>
+ <div class="subj">題目：產線感測數據監控台 · 讀者：值班工程師</div>
+ <div class="swrow">
+ <div class="k">Color</div>
+ <div class="swatches">
+ <div class="sw" style="background:#12161B"><span>12161B</span></div>
+ <div class="sw" style="background:#1E242B"><span>1E242B</span></div>
+ <div class="sw" style="background:#F2A93B"><span>F2A93B</span></div>
+ <div class="sw" style="background:#96A1AE"><span>96A1AE</span></div>
+ <div class="sw" style="background:#E7ECF2"><span>E7ECF2</span></div>
+ </div>
+ </div>
+ <div class="row"><div class="k">Type</div>
+ <div class="v">數值／標籤：等寬體<br><em>內文：Noto Sans TC · 400／700 兩級</em></div></div>
+ <div class="row"><div class="k">Layout</div>
+ <div class="v">單一主數值置頂，其餘資訊往下遞減密度</div></div>
+ <div class="row"><div class="k">Signature</div>
+ <div class="sig">橫貫整寬的時間刻度尺，異常區間直接染色</div></div>
+ </div>
+
+ <div class="tokcard">
+ <h3>Kiln</h3>
+ <div class="subj">題目：手作陶器選物店 · 讀者：一般消費者</div>
+ <div class="swrow">
+ <div class="k">Color</div>
+ <div class="swatches">
+ <div class="sw" style="background:#DDE2DA"><span>DDE2DA</span></div>
+ <div class="sw" style="background:#A9B5A4"><span>A9B5A4</span></div>
+ <div class="sw" style="background:#4A5847"><span>4A5847</span></div>
+ <div class="sw" style="background:#22301F"><span>22301F</span></div>
+ <div class="sw" style="background:#B08A3E"><span>B08A3E</span></div>
+ </div>
+ </div>
+ <div class="row"><div class="k">Type</div>
+ <div class="v">標題：思源宋體 400，字距放寬<br><em>內文：黑體 12px／行高 1.9</em></div></div>
+ <div class="row"><div class="k">Layout</div>
+ <div class="v">左側窄欄文字，右側大量留白承載器物照</div></div>
+ <div class="row"><div class="k">Signature</div>
+ <div class="sig">品號以直排置於右緣，像落款而非編號</div></div>
+ </div>
+
+ <div class="tokcard">
+ <h3>Nightline</h3>
+ <div class="subj">題目：城市夜間單車路線 · 讀者：週末騎士</div>
+ <div class="swrow">
+ <div class="k">Color</div>
+ <div class="swatches">
+ <div class="sw" style="background:#1B0F3B"><span>1B0F3B</span></div>
+ <div class="sw" style="background:#7B4DFF"><span>7B4DFF</span></div>
+ <div class="sw" style="background:#FF3D7F"><span>FF3D7F</span></div>
+ <div class="sw" style="background:#33E1FF"><span>33E1FF</span></div>
+ <div class="sw" style="background:#F4F0FF"><span>F4F0FF</span></div>
+ </div>
+ </div>
+ <div class="row"><div class="k">Type</div>
+ <div class="v">標題：黑體 700，字距收緊 -.01em<br><em>數據：等寬體，作為節奏標記</em></div></div>
+ <div class="row"><div class="k">Layout</div>
+ <div class="v">滿版深色，光暈自右上角外溢出血</div></div>
+ <div class="row"><div class="k">Signature</div>
+ <div class="sig">高度即海拔的波形條，同時是路線縮圖</div></div>
+ </div>
+ </div>
+ <div class="foot"><span>ARTIFACT DESIGN REFERENCE</span><span>01 / 03</span></div>
+</div>
+
+<!-- ============ SHEET 2 ============ -->
+<div class="sheet" id="s2">
+ <div class="eyebrow">Sheet 02 — Token 落地後的樣子</div>
+ <h1>三種題目，三種長相</h1>
+ <p class="lede">同一個 Agent、同一份規則，因為 token 不同而長出完全不同的東西。這正是驗收標準：把三張並排，如果看起來像同一套模板換色，token 就沒發揮作用。</p>
+
+ <div class="mocks">
+ <div>
+ <div class="frame">
+ <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+ <div class="mA">
+ <div class="tag">LINE 03 · 硫化溫度</div>
+ <div class="big">168.4</div>
+ <div class="unit">攝氏度 · 容許區間 165–172</div>
+ <div class="ruler">
+ <i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i>
+ <i style="height:62%"></i><i style="height:58%"></i><i class="on" style="height:88%"></i>
+ <i class="on" style="height:96%"></i><i style="height:70%"></i><i style="height:52%"></i>
+ <i style="height:46%"></i><i style="height:60%"></i><i style="height:44%"></i>
+ </div>
+ <div class="ticks"><span>06:00</span><span>12:00</span><span>18:00</span><span>NOW</span></div>
+ <table>
+ <tr><td>模具壓力</td><td>4.2 MPa</td></tr>
+ <tr><td>循環時間</td><td>212 s</td></tr>
+ <tr><td>本班不良數</td><td>3</td></tr>
+ </table>
+ </div>
+ </div>
+ <p class="cap"><b>Signal</b> 資訊密度即美學。字體全部讓位給數字，唯一的暖色只用來標記異常，不裝飾。</p>
+ </div>
+
+ <div>
+ <div class="frame">
+ <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+ <div class="mB">
+ <div class="num">NO. 0042 · 灰釉</div>
+ <h4>指腹留在坏體上的那圈痕跡</h4>
+ <div class="rule"></div>
+ <p>柴燒七十二小時，落灰自然成釉。每一只的色澤都不會重複，收到的那只就是唯一的那只。</p>
+ <div class="price">NT$ 2,800</div>
+ <div class="btn">加入購物袋</div>
+ </div>
+ </div>
+ <p class="cap"><b>Kiln</b> 留白是主角。宋體放大、行高拉開，讓閱讀速度慢下來對應手作的節奏。</p>
+ </div>
+
+ <div>
+ <div class="frame">
+ <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+ <div class="mC">
+ <div class="glow"></div>
+ <div class="kick">ROUTE 07 · 22:40 START</div>
+ <h4>沿著河堤，<br>把整座城市<u>騎成一條線</u></h4>
+ <div class="wave">
+ <i style="height:30%"></i><i style="height:52%"></i><i style="height:41%"></i>
+ <i style="height:78%"></i><i style="height:96%"></i><i style="height:64%"></i>
+ <i style="height:47%"></i><i style="height:72%"></i><i style="height:38%"></i>
+ <i style="height:55%"></i><i style="height:26%"></i><i style="height:44%"></i>
+ </div>
+ <div class="meta"><span>18.4 KM</span><span>爬升 96 M</span><span>約 72 MIN</span></div>
+ <div class="pill">開始導航</div>
+ </div>
+ </div>
+ <p class="cap"><b>Nightline</b> 波形條同時是海拔剖面與視覺記憶點 — 這就是 signature：好看，而且承載資訊。</p>
+ </div>
+ </div>
+ <div class="foot"><span>ARTIFACT DESIGN REFERENCE</span><span>02 / 03</span></div>
+</div>
+
+<!-- ============ SHEET 3 ============ -->
+<div class="sheet" id="s3">
+ <div class="eyebrow">Sheet 03 — 反面教材</div>
+ <h1>這三種長相，換什麼題目都會出現</h1>
+ <p class="lede">目前 AI 生成的畫面高度集中在下列三種。它們本身沒有錯，錯在它們是「預設值」而不是「選擇」— 出現的原因與題目無關。把這張圖貼進 prompt，比寫十行文字描述有效。</p>
+
+ <div class="avoid">
+ <div>
+ <div class="av av1">
+ <div class="t">重新定義你的<br>工作流程</div>
+ <div class="b">立即開始</div>
+ </div>
+ <p class="why"><b>1 · 米白 + 襯線 + 陶土橘</b><br>底色近 #F4F1EA、強調色近 #D97757。這正好是 Claude 介面自己的配色，出現在使用者的作品上等於露餡。</p>
+ </div>
+ <div>
+ <div class="av av2">
+ <div class="t">為速度<u>而生</u></div>
+ <div class="b">GET STARTED →</div>
+ </div>
+ <p class="why"><b>2 · 近黑底 + 單一螢光色</b><br>螢光綠或朱紅點綴的深色頁。看起來很「科技」，但任何 SaaS 都能套，等於沒有識別。</p>
+ </div>
+ <div>
+ <div class="av av3">
+ <div class="hd">The Quarterly Review</div>
+ <div class="cols">
+ <div class="c"><b>01 — 緣起</b>細線分隔、圓角歸零、密集多欄，模擬報紙版面。</div>
+ <div class="c"><b>02 — 方法</b>編號標記整齊排列，但內容其實不是序列。</div>
+ <div class="c"><b>03 — 結論</b>結構在裝飾，而不是在傳達資訊。</div>
+ </div>
+ </div>
+ <p class="why"><b>3 · 報紙風排版</b><br>髮絲線、零圓角、多欄。只有內容真的是序列時才用 01/02/03，否則編號是裝飾不是結構。</p>
+ </div>
+ </div>
+
+ <h2 style="margin-top:44px">介面文案：同樣需要被設計</h2>
+ <p class="lede">文案跟版面一樣會洩漏模板感。用使用者控制的東西命名，不要用系統實作的方式命名。</p>
+ <div class="copy">
+ <div><span class="h lab">情境</span><span class="h">常見寫法</span><span class="h">改寫</span></div>
+ <div><span class="lab">主要按鈕</span><span class="bad">送出</span><span class="good">儲存變更</span></div>
+ <div><span class="lab">動作一致性</span><span class="bad">按「發布」→ 提示「操作成功」</span><span class="good">按「發布」→ 提示「已發布」</span></div>
+ <div><span class="lab">錯誤訊息</span><span class="bad">很抱歉，發生未預期的錯誤</span><span class="good">檔案超過 10 MB，請壓縮後再上傳</span></div>
+ <div><span class="lab">空狀態</span><span class="bad">目前沒有資料</span><span class="good">還沒有專案。建立第一個開始。</span></div>
+ <div><span class="lab">功能命名</span><span class="bad">Webhook 設定</span><span class="good">通知</span></div>
+ </div>
+ <div class="foot"><span>ARTIFACT DESIGN REFERENCE</span><span>03 / 03</span></div>
+</div>
+
+</body>
+</html>
